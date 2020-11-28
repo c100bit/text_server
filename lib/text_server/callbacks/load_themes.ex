@@ -5,9 +5,8 @@ defmodule TextServer.Callbacks.LoadThemes do
   alias TextServer.Schemas.Theme
 
   def call(conn) do
-    result =
-      conn.body_params
-      |> load_themes
+    conn.body_params
+    |> load_themes
 
     render_success(conn, "success")
   rescue
