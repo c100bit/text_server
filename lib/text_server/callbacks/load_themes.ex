@@ -21,6 +21,6 @@ defmodule TextServer.Callbacks.LoadThemes do
   end
 
   defp build_row(item) do
-    %{title: item["title"], text: item["text"]}
+    %{external_id: item["id"], title: item["title"], text: item["text"]}
   end
 end

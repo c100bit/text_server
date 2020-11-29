@@ -7,6 +7,7 @@ defmodule TextServer.Schemas.Theme do
   alias TextServer.Repo
 
   schema "themes" do
+    field(:external_id, :integer)
     field(:title, :string)
     field(:text, :string)
   end

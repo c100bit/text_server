@@ -6,11 +6,18 @@
 
 Клиенты асинхронно передают запрос на проверку схожести при заполнении предложения
 
+Стек: elixir, postgresql
+
 Два колбека для проверки предложения и синхронизации текстов:
+
 ```
 curl -i -X POST "https://rocky-depths-37442.herokuapp.com/check_theme" -H "Content-Type: application/json" -d '{"title": "title", "text": "text"}'
 
-curl -i -X POST "https://rocky-depths-37442.herokuapp.com/load_themes" -H "Content-Type: application/json" -d '{"themes": [{"title": "title1", "text": "text1"}, {"title": "title2", "text": "text2"} ]}'
+curl -i -X POST "https://rocky-depths-37442.herokuapp.com/load_themes" -H "Content-Type: application/json" -d '{"themes": [{"id": 1, "title": "title1", "text": "text1"}, {"id": 2, "title": "title2", "text": "text2"} ]}'
 ```
 
-Возвращает коэффициент схожести - {"result":0.6,"status":"ok"}
+Колбек проверки схожести /check_theme возвращает массив id предложений схожих по тексту:
+
+```
+{"result":{"proposal_ids":[1,2]},"status":"ok"}
+```

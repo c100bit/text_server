@@ -4,6 +4,8 @@ defmodule TextServer.Callbacks.CheckTheme do
   require Logger
   alias TextServer.Schemas.Theme
 
+  @max_koef 0.4
+
   def call(conn) do
     result =
       conn.body_params
@@ -25,18 +27,20 @@ defmodule TextServer.Callbacks.CheckTheme do
   end
 
   defp check_text(%{"title" => title, "text" => text}) do
-    themes = Theme.fetch_all() |> Enum.map(fn t -> check_theme(title, text, t) end)
+    ids =
+      Theme.fetch_all() |> Enum.map(fn t -> check_theme(title, text, t) end) |> Enum.filter(& &1)
 
-    if length(themes) == 0 do
-      0
-    else
-      Enum.max(themes)
-    end
+    %{proposal_ids: ids}
   end
 
   defp check_theme(title, text, theme) do
     title = TheFuzz.Similarity.Jaccard.compare(title, theme.title)
     text = TheFuzz.Similarity.Jaccard.compare(text, theme.text)
-    Enum.max([title, text])
+
+    if Enum.max([title, text]) >= @max_koef do
+      theme.external_id
+    else
+      nil
+    end
   end
 end
