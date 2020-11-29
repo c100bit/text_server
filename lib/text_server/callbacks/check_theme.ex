@@ -28,14 +28,17 @@ defmodule TextServer.Callbacks.CheckTheme do
 
   defp check_text(%{"title" => title, "text" => text}) do
     ids =
-      Theme.fetch_all() |> Enum.map(fn t -> check_theme(title, text, t) end) |> Enum.filter(& &1)
+      Theme.fetch_all()
+      |> Enum.map(fn t -> check_theme(title, text, t) end)
+      |> Enum.filter(& &1)
+      |> Enum.uniq()
 
     %{proposal_ids: ids}
   end
 
   defp check_theme(title, text, theme) do
-    title = TheFuzz.Similarity.Jaccard.compare(title, theme.title)
-    text = TheFuzz.Similarity.Jaccard.compare(text, theme.text)
+    title = TheFuzz.Similarity.Jaccard.compare(String.downcase(title), theme.title)
+    text = TheFuzz.Similarity.Jaccard.compare(String.downcase(text), theme.text)
 
     if Enum.max([title, text]) >= @max_koef do
       theme.external_id
